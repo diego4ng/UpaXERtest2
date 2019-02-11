@@ -59,7 +59,7 @@ class Coredatatableview: UIViewController,UITableViewDataSource,UITableViewDeleg
             let fiveTextField = alertController.textFields![4] as UITextField
             
             self.saveTask(nameTask: firstTextField.text!, nameTask2: secondTextField.text!, nameTask3: thirdTextField.text!, nameTask4: fourTextField.text!, nameTask5: fiveTextField.text!)
-           
+           self.tableview.reloadData()
         })
         let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: { (action : UIAlertAction!) -> Void in })
         
@@ -69,7 +69,8 @@ class Coredatatableview: UIViewController,UITableViewDataSource,UITableViewDeleg
         
         self.present(alertController, animated: true, completion: nil)
         
-        
+       tableview.reloadData()
+    viewWillAppear(true)
         
     }
     
@@ -79,36 +80,36 @@ class Coredatatableview: UIViewController,UITableViewDataSource,UITableViewDeleg
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return ID.count
+        return tasks.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell:tablecell = tableView.dequeueReusableCell(withIdentifier: "cell",for: indexPath) as! tablecell
         
 //
-//        let task = tasks[indexPath.row]
-//        //Con KVC obtenemos el contenido del atributo "name" de la task y lo añadimos a nuestra Cell
-//        cell.NOMBRE.text = task.value(forKey: "name") as? String
-//        cell.ALIAS.text = task.value(forKey: "nickname") as? String
-//        cell.FECNAC.text = task.value(forKey: "fecha") as? String
-//        cell.POSICIO.text = task.value(forKey: "puesto") as? String
+        let task = self.tasks[indexPath.row]
+        //Con KVC obtenemos el contenido del atributo "name" de la task y lo añadimos a nuestra Cell
+        cell.NOMBRE.text = task.value(forKey: "name") as? String
+        cell.ALIAS.text = task.value(forKey: "nickname") as? String
+        cell.FECNAC.text = task.value(forKey: "fecha") as? String
+        cell.POSICIO.text = task.value(forKey: "puesto") as? String
+
+        return cell
+        
+        
+//        let id1 = self.ID[indexPath.row]
+//        let nombre1 = self.Nombre[indexPath.row]
+//        let fechanac1 = self.Fechanac[indexPath.row]
+//        let pos1 = self.posicionarray[indexPath.row]
+//        let alias1 = self.aliasarray[indexPath.row]
+//
+//        cell.ID.text = id1
+//        cell.NOMBRE.text = nombre1
+//        cell.FECNAC.text = fechanac1
+//        cell.POSICIO.text = pos1
+//        cell.ALIAS.text = alias1
 //
 //        return cell
-        
-        
-        let id1 = self.ID[indexPath.row]
-        let nombre1 = self.Nombre[indexPath.row]
-        let fechanac1 = self.Fechanac[indexPath.row]
-        let pos1 = self.posicionarray[indexPath.row]
-        let alias1 = self.aliasarray[indexPath.row]
-
-        cell.ID.text = id1
-        cell.NOMBRE.text = nombre1
-        cell.FECNAC.text = fechanac1
-        cell.POSICIO.text = pos1
-        cell.ALIAS.text = alias1
-        
-        return cell
     }
     
     //guarda datos
