@@ -12,6 +12,7 @@ import CoreData
 
 class Coredatatableview: UIViewController,UITableViewDataSource,UITableViewDelegate {
     
+    @IBOutlet weak var tableview: UITableView!
     //Usando CoreData
     var tasks = [NSManagedObject]()
     
@@ -57,6 +58,7 @@ class Coredatatableview: UIViewController,UITableViewDataSource,UITableViewDeleg
             let fourTextField = alertController.textFields![3] as UITextField
             let fiveTextField = alertController.textFields![4] as UITextField
             
+            self.saveTask(nameTask: firstTextField.text!, nameTask2: secondTextField.text!, nameTask3: thirdTextField.text!, nameTask4: fourTextField.text!, nameTask5: fiveTextField.text!)
            
         })
         let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: { (action : UIAlertAction!) -> Void in })
@@ -83,12 +85,23 @@ class Coredatatableview: UIViewController,UITableViewDataSource,UITableViewDeleg
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell:tablecell = tableView.dequeueReusableCell(withIdentifier: "cell",for: indexPath) as! tablecell
         
+//
+//        let task = tasks[indexPath.row]
+//        //Con KVC obtenemos el contenido del atributo "name" de la task y lo añadimos a nuestra Cell
+//        cell.NOMBRE.text = task.value(forKey: "name") as? String
+//        cell.ALIAS.text = task.value(forKey: "nickname") as? String
+//        cell.FECNAC.text = task.value(forKey: "fecha") as? String
+//        cell.POSICIO.text = task.value(forKey: "puesto") as? String
+//
+//        return cell
+        
+        
         let id1 = self.ID[indexPath.row]
         let nombre1 = self.Nombre[indexPath.row]
         let fechanac1 = self.Fechanac[indexPath.row]
         let pos1 = self.posicionarray[indexPath.row]
         let alias1 = self.aliasarray[indexPath.row]
-        
+
         cell.ID.text = id1
         cell.NOMBRE.text = nombre1
         cell.FECNAC.text = fechanac1
@@ -98,6 +111,34 @@ class Coredatatableview: UIViewController,UITableViewDataSource,UITableViewDeleg
         return cell
     }
     
+    //guarda datos
+    func saveTask(nameTask:String,nameTask2:String,nameTask3:String,nameTask4:String,nameTask5:String){
+        //1
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let managedContext = appDelegate.persistentContainer.viewContext
+        
+        //2
+        let entity = NSEntityDescription.entity(forEntityName: "Entity", in: managedContext)
+        let task = NSManagedObject(entity: entity!, insertInto: managedContext)
+        
+        //3
+        task.setValue(nameTask, forKey: "name")
+        task.setValue(nameTask2, forKey: "id")
+        task.setValue(nameTask3, forKey: "fecha")
+        task.setValue(nameTask4, forKey: "nickname")
+        task.setValue(nameTask5, forKey: "puesto")
+        
+        //4
+        do {
+            try managedContext.save()
+            //5
+            tasks.append(task)
+        } catch let error as NSError {
+            print("No ha sido posible guardar \(error), \(error.userInfo)")
+        }
+    }
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,4 +146,26 @@ class Coredatatableview: UIViewController,UITableViewDataSource,UITableViewDeleg
     }
     
     
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // 1
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let managedContext = appDelegate.persistentContainer.viewContext
+        
+        // 2
+        let fetchRequest : NSFetchRequest<Entity> = Entity.fetchRequest()
+        
+        // 3
+        do {
+            let results = try managedContext.fetch(fetchRequest)
+            tasks = results as [NSManagedObject]
+        } catch let error as NSError {
+            print("No ha sido posible cargar \(error), \(error.userInfo)")
+        }
+        // 4
+        tableview.reloadData()
+    }
 }

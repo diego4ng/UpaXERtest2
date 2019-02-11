@@ -230,6 +230,9 @@
                         <viewLayoutGuide key="safeArea" id="ApW-Ul-O2W"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="CoreData Ej3" id="lve-6J-91C"/>
+                    <connections>
+                        <outlet property="tableview" destination="kIW-iS-rSX" id="jCS-3n-Dl4"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AhE-gg-zSU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
